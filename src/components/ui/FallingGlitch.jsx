@@ -40,93 +40,93 @@ const FallingGlitch = ({
             canvasHeight = rect.height;
             canvas.width = canvasWidth * dpr;
             canvas.height = canvasHeight * dpr;
-            canvas.style.width = \`\${canvasWidth}px\`;
-      canvas.style.height = \`\${canvasHeight}px\`;
-      ctx.scale(dpr, dpr);
-      ctx.font = \`\${fontSize}px monospace\`;
-      
-      const charMetrics = ctx.measureText("M");
-      grid.current = {
-        columns: Math.floor(canvasWidth / charMetrics.width),
-        rows: Math.floor(canvasHeight / (fontSize * 1.2)),
-        charWidth: charMetrics.width,
-        charHeight: fontSize * 1.2
-      };
+            canvas.style.width = `${canvasWidth}px`;
+            canvas.style.height = `${canvasHeight}px`;
+            ctx.scale(dpr, dpr);
+            ctx.font = `${fontSize}px monospace`;
 
-      const extendedRows = grid.current.rows * 2;
-      const totalLetters = grid.current.columns * extendedRows;
-      
-      letters.current = Array.from({ length: totalLetters }, (_, i) => {
-        const col = i % grid.current.columns;
-        const row = Math.floor(i / grid.current.columns);
-        return {
-          char: getRandomChar(),
-          x: col * grid.current.charWidth,
-          y: row * grid.current.charHeight - grid.current.rows * grid.current.charHeight,
-          color: getRandomColor()
+            const charMetrics = ctx.measureText("M");
+            grid.current = {
+                columns: Math.floor(canvasWidth / charMetrics.width),
+                rows: Math.floor(canvasHeight / (fontSize * 1.2)),
+                charWidth: charMetrics.width,
+                charHeight: fontSize * 1.2
+            };
+
+            const extendedRows = grid.current.rows * 2;
+            const totalLetters = grid.current.columns * extendedRows;
+
+            letters.current = Array.from({ length: totalLetters }, (_, i) => {
+                const col = i % grid.current.columns;
+                const row = Math.floor(i / grid.current.columns);
+                return {
+                    char: getRandomChar(),
+                    x: col * grid.current.charWidth,
+                    y: row * grid.current.charHeight - grid.current.rows * grid.current.charHeight,
+                    color: getRandomColor()
+                };
+            });
+            animationFrameId.current = requestAnimationFrame(animate);
         };
-      });
-      animationFrameId.current = requestAnimationFrame(animate);
-    };
 
-    const animate = timestamp => {
-      animationFrameId.current = requestAnimationFrame(animate);
-      if (timestamp - lastGlitchTime.current > glitchSpeed) {
-        lastGlitchTime.current = timestamp;
-        const updateCount = Math.floor(letters.current.length * glitchIntensity);
-        for (let i = 0; i < updateCount; i++) {
-          const index = Math.floor(Math.random() * letters.current.length);
-          if (letters.current[index]) {
-            letters.current[index].char = getRandomChar();
-            letters.current[index].color = getRandomColor();
-          }
-        }
-      }
+        const animate = timestamp => {
+            animationFrameId.current = requestAnimationFrame(animate);
+            if (timestamp - lastGlitchTime.current > glitchSpeed) {
+                lastGlitchTime.current = timestamp;
+                const updateCount = Math.floor(letters.current.length * glitchIntensity);
+                for (let i = 0; i < updateCount; i++) {
+                    const index = Math.floor(Math.random() * letters.current.length);
+                    if (letters.current[index]) {
+                        letters.current[index].char = getRandomChar();
+                        letters.current[index].color = getRandomColor();
+                    }
+                }
+            }
 
-      const totalFieldHeight = grid.current.rows * grid.current.charHeight * 2;
-      
-      letters.current.forEach(letter => {
-        letter.y += fallSpeed;
-        if (letter.y > canvasHeight) {
-          letter.y -= totalFieldHeight;
-        }
-      });
+            const totalFieldHeight = grid.current.rows * grid.current.charHeight * 2;
 
-      ctx.fillStyle = backgroundColor;
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-      ctx.font = \`\${fontSize}px monospace\`;
-      ctx.textBaseline = "top";
-      
-      letters.current.forEach(letter => {
-        ctx.fillStyle = letter.color;
-        ctx.fillText(letter.char, letter.x, letter.y);
-      });
-    };
+            letters.current.forEach(letter => {
+                letter.y += fallSpeed;
+                if (letter.y > canvasHeight) {
+                    letter.y -= totalFieldHeight;
+                }
+            });
 
-    let resizeTimeout;
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(setup, 150);
-    };
+            ctx.fillStyle = backgroundColor;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.font = `${fontSize}px monospace`;
+            ctx.textBaseline = "top";
 
-    window.addEventListener("resize", handleResize);
-    setup();
+            letters.current.forEach(letter => {
+                ctx.fillStyle = letter.color;
+                ctx.fillText(letter.char, letter.x, letter.y);
+            });
+        };
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
-    };
-  }, [glitchColors, fontSize, backgroundColor, glitchSpeed, glitchIntensity, fallSpeed]);
+        let resizeTimeout;
+        const handleResize = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(setup, 150);
+        };
 
-  return (
-    <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden">
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
-      {outerVignette && <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle,_transparent_30%,_black_100%)]"></div>}
-      <div className="relative z-10 w-full h-full pointer-events-none">
-        {children}
-      </div>
-    </div>
-  );
+        window.addEventListener("resize", handleResize);
+        setup();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+        };
+    }, [glitchColors, fontSize, backgroundColor, glitchSpeed, glitchIntensity, fallSpeed]);
+
+    return (
+        <div ref={containerRef} className="relative w-full h-full bg-black overflow-hidden">
+            <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+            {outerVignette && <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle,_transparent_30%,_black_100%)]"></div>}
+            <div className="relative z-10 w-full h-full pointer-events-none">
+                {children}
+            </div>
+        </div>
+    );
 };
 
 export default FallingGlitch;

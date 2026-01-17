@@ -63,7 +63,7 @@ const App = () => {
         </div>
         <div className="relative z-10 w-full max-w-5xl mx-auto text-center p-8 bg-black/60 backdrop-blur-sm rounded-3xl border border-green-500/20">
           <h2 className="text-4xl md:text-6xl font-bold mb-6 text-green-400 font-mono">
-            Veri > İçgörü > Karar
+            Veri &gt; İçgörü &gt; Karar
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             <div className="p-6 border border-green-500/30 rounded-xl bg-green-900/10">
