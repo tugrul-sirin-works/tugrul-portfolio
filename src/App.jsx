@@ -49,6 +49,7 @@ const App = () => {
         {/* KATMAN 2: SHAPE BLUR (Sıvı Efekti - Ortada) */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] z-10 opacity-60 mix-blend-screen pointer-events-none">
           <ShapeBlur
+           <ShapeBlur
             variation={0}
             pixelRatioProp={window.devicePixelRatio || 1}
             shapeSize={2.5}
@@ -59,38 +60,17 @@ const App = () => {
           />
         </div>
 
-        {/* KATMAN 3: YARI ŞEFFAF PERDE & YAZI DELİĞİ (SVG MASK) */}
-        {/* pointer-events-none EKLENDİ: Mouse buradan geçip alttaki RippleGrid'e değecek */}
-        <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center">
-          <svg className="w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <mask id="textMask">
-                {/* Beyaz kısımlar = Perde GÖRÜNÜR. Siyah kısımlar = Perde DELİNİR (Yazı) */}
-                <rect width="100%" height="100%" fill="white" />
-                <text
-                  x="50%" y="50%"
-                  textAnchor="middle"
-                  dy=".35em"
-                  fontSize="220"
-                  fontWeight="900"
-                  fill="black"
-                  className="font-sans tracking-tighter"
-                >
-                  TUĞRUL ŞİRİN
-                </text>
-              </mask>
-            </defs>
-            {/* DÜZELTME: fill="black" yerine rgba kullandık. 
-                Böylece arkadaki Ripple Grid hafifçe görünecek (0.9 opaklık).
-            */}
-            <rect width="100%" height="100%" fill="rgba(5, 5, 5, 0.9)" mask="url(#textMask)" />
-          </svg>
-        </div>
+        {/* KATMAN 3: İÇERİK (Responsive H1 ve Diğerleri) */}
+        <div className="relative z-20 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="text-8xl md:text-[10rem] font-bold mb-2 tracking-tighter leading-[1.2] text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 z-20 relative pb-4 drop-shadow-2xl"
+          >
+            Tuğrul Şirin
+          </motion.h1>
 
-        {/* KATMAN 4: İÇERİK (Yazının Altındakiler) */}
-        <div className="relative z-30 mt-[35vh] text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
-
-          <div className="mb-8">
+          <div className="mb-8 z-20">
             <GradientText
               colors={['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa']}
               animationSpeed={4}
@@ -100,7 +80,7 @@ const App = () => {
             </GradientText>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-lg text-gray-400 bg-black/60 p-3 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-lg text-gray-400 bg-black/60 p-3 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl z-20">
             <span className="opacity-70">Uzmanlık:</span>
             <FlipWords
               words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]}
