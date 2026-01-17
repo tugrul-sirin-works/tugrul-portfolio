@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { EffectComposer, RenderPass, EffectPass, BloomEffect, ChromaticAberrationEffect } from 'postprocessing';
 import * as THREE from 'three';
 import './GridScan.css';
 
@@ -11,91 +10,71 @@ void main(){
 }
 `;
 
+// MOR TÜNEL SHADER'I (React Bits Style)
 const frag = `
 precision highp float;
 uniform vec3 iResolution;
 uniform float iTime;
-uniform vec3 uScanColor;
-uniform vec3 uLinesColor;
-uniform float uGridScale;
-varying vec2 vUv;
+uniform vec3 uColor;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
-    vec2 p = (2.0 * fragCoord - iResolution.xy) / iResolution.y;
+    vec2 uv = (fragCoord * 2.0 - iResolution.xy) / iResolution.y;
     
     // Tünel Hareketi
-    float speed = iTime * 0.5;
-    vec2 uv = p;
+    float speed = iTime * 0.4;
     
-    // Perspektif / Tünel matematiği
+    // Tünel Matematiği (1/r = derinlik)
     float r = length(uv);
-    float a = atan(uv.y, uv.x);
+    float a = atan(uv.y, uv.x) / 3.141592; // Açı
     
-    // Grid oluşturma
-    vec2 gridUV = vec2(0.5 / r + speed, a / 3.14159);
+    // UV Koordinatlarını bükerek tünel yapma
+    vec2 tun = vec2(0.3 / r + speed, a);
     
-    float gridScale = uGridScale * 20.0;
-    vec2 grid = abs(fract(gridUV * gridScale) - 0.5) / fwidth(gridUV * gridScale);
+    // Grid Çizimi
+    float gridScale = 10.0; // Izgara sıklığı
+    vec2 grid = abs(fract(tun * gridScale - 0.5) - 0.5) / fwidth(tun * gridScale);
     float line = min(grid.x, grid.y);
-    float alpha = 1.0 - min(line, 1.0);
     
-    // Derinlik hissi (Ortası karanlık)
-    float fade = smoothstep(0.0, 0.5, r);
+    // Çizgi kalınlığı ve yumuşatma
+    float val = 1.0 - smoothstep(0.0, 0.2, line);
     
-    vec3 col = mix(uLinesColor, uScanColor, alpha);
-    col *= fade; // Merkeze doğru karart
+    // Merkezdeki siyahlığı sağla (Sonsuzluk hissi)
+    float fog = smoothstep(0.0, 0.8, r);
+    
+    // Renk (Mor)
+    vec3 col = uColor * val * fog;
+    
+    // Ekstra parlama
+    col += uColor * 0.2 * fog;
 
-    // Scan benzeri parlama
-    float beam = smoothstep(0.4, 0.6, abs(fract(gridUV.x * 0.5 - iTime * 0.2) - 0.5));
-    col += uScanColor * beam * 0.5 * fade;
-
-    fragColor = vec4(col, fade); // Kenarlar şeffaf olmasın, orta delik olsun
+    fragColor = vec4(col, fog * val); // Alpha kanalını da ayarla
 }
 
 void main(){
   vec4 c;
-  mainImage(c, vUv * iResolution.xy);
+  mainImage(c, gl_FragCoord.xy);
   gl_FragColor = c;
 }
 `;
 
-function srgbColor(hex) {
-    const c = new THREE.Color(hex);
-    return c.convertSRGBToLinear();
-}
-
 export const GridScan = ({
-    linesColor = '#392e4e',
-    scanColor = '#FF9FFC', // Senin istediğin Mor/Pembe
-    gridScale = 0.1,
-    bloomIntensity = 0.5,
-    bloomThreshold = 0.2,
-    bloomSmoothing = 0.1,
-    chromaticAberration = 0.003
+    scanColor = '#bd00ff', // NEON MOR
 }) => {
     const containerRef = useRef(null);
-    const rendererRef = useRef(null);
-    const materialRef = useRef(null);
-    const composerRef = useRef(null);
-    const rafRef = useRef(null);
 
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        rendererRef.current = renderer;
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
         const uniforms = {
-            iResolution: { value: new THREE.Vector3(container.clientWidth, container.clientHeight, renderer.getPixelRatio()) },
+            iResolution: { value: new THREE.Vector3(container.clientWidth, container.clientHeight, 1) },
             iTime: { value: 0 },
-            uLinesColor: { value: srgbColor(linesColor) },
-            uScanColor: { value: srgbColor(scanColor) },
-            uGridScale: { value: gridScale }
+            uColor: { value: new THREE.Color(scanColor) }
         };
 
         const material = new THREE.ShaderMaterial({
@@ -103,56 +82,38 @@ export const GridScan = ({
             vertexShader: vert,
             fragmentShader: frag,
             transparent: true,
-            depthWrite: false,
-            depthTest: false,
-            blending: THREE.AdditiveBlending // Arka planla karışsın
+            blending: THREE.AdditiveBlending // Işık efekti gibi parlasın
         });
-        materialRef.current = material;
 
         const scene = new THREE.Scene();
         const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
         const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
         scene.add(quad);
 
-        // Post Processing (Bloom & Glitch Effect)
-        const composer = new EffectComposer(renderer);
-        composerRef.current = composer;
-        const renderPass = new RenderPass(scene, camera);
-        composer.addPass(renderPass);
-
-        const bloom = new BloomEffect({ intensity: 1.0, luminanceThreshold: bloomThreshold, luminanceSmoothing: bloomSmoothing });
-        bloom.blendMode.opacity.value = bloomIntensity;
-
-        const chroma = new ChromaticAberrationEffect({ offset: new THREE.Vector2(chromaticAberration, chromaticAberration) });
-
-        const effectPass = new EffectPass(camera, bloom, chroma);
-        effectPass.renderToScreen = true;
-        composer.addPass(effectPass);
-
-        const onResize = () => {
+        const resize = () => {
+            if (!container) return;
             renderer.setSize(container.clientWidth, container.clientHeight);
-            material.uniforms.iResolution.value.set(container.clientWidth, container.clientHeight, renderer.getPixelRatio());
-            composer.setSize(container.clientWidth, container.clientHeight);
+            uniforms.iResolution.value.set(container.clientWidth, container.clientHeight, 1);
         };
-        window.addEventListener('resize', onResize);
+        window.addEventListener('resize', resize);
 
-        const tick = (time) => {
-            material.uniforms.iTime.value = time * 0.001;
-            composer.render();
-            rafRef.current = requestAnimationFrame(tick);
+        let req;
+        const animate = (time) => {
+            req = requestAnimationFrame(animate);
+            uniforms.iTime.value = time * 0.001;
+            renderer.render(scene, camera);
         };
-        rafRef.current = requestAnimationFrame(tick);
+        animate(0);
 
         return () => {
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            window.removeEventListener('resize', onResize);
-            material.dispose();
-            quad.geometry.dispose();
-            composer.dispose();
+            cancelAnimationFrame(req);
+            window.removeEventListener('resize', resize);
+            if (container.contains(renderer.domElement)) {
+                container.removeChild(renderer.domElement);
+            }
             renderer.dispose();
-            container.removeChild(renderer.domElement);
         };
-    }, [linesColor, scanColor, gridScale, bloomIntensity, bloomThreshold, chromaticAberration]);
+    }, [scanColor]);
 
     return <div ref={containerRef} className="gridscan" />;
 };
