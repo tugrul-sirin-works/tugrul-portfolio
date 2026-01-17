@@ -7,16 +7,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        'brand-dark': '#0a0a0a',
-        'brand-gray': '#1a1a1a',
+        'brand-dark': '#050505',
         'brand-accent': '#3b82f6',
+        'brand-purple': '#8b5cf6',
+        'brand-green': '#10b981',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
-      animation: {
-        'spin-slow': 'spin 8s linear infinite',
-      },
+      lineHeight: {
+        'extra-loose': '2.5',
+      }
     },
   },
   plugins: [],
