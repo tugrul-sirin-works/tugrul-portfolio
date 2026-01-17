@@ -43,7 +43,7 @@ const App = () => {
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="text-8xl md:text-[10rem] font-bold mb-2 tracking-tighter leading-[1] text-apple-gradient"
+            className="text-8xl md:text-[10rem] font-bold mb-2 tracking-tighter leading-[1] text-apple-gradient pb-6"
           >
             Tuğrul Şirin
           </motion.h1>
