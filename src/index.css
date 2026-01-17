@@ -46,43 +46,40 @@ body {
     padding: 20px;
 }
 
-/* Navigasyon Noktaları (Görünür Yap) */
+/* Navigasyon Noktaları (Minimal) */
 .nav-dots {
     position: fixed;
-    right: 30px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 9999;
-    /* En üstte */
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    background: rgba(0, 0, 0, 0.5);
-    /* Arkasına hafif gölge */
-    padding: 10px;
-    border-radius: 20px;
-    backdrop-filter: blur(5px);
+    gap: 12px;
+    /* Arkaplanı kaldırdık - daha az belirgin olması için */
+    padding: 8px;
 }
 
 .nav-dot {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .nav-dot:hover {
     transform: scale(1.2);
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .nav-dot.active {
     background: #3b82f6;
-    box-shadow: 0 0 15px #3b82f6;
-    transform: scale(1.5);
+    box-shadow: 0 0 10px #3b82f6;
+    transform: scale(1.25);
+    border-color: transparent;
 }
 
 /* Apple Style Text Gradient */
