@@ -2,18 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-    .snap-container {
-        @apply h-screen w-full overflow-y-scroll snap-y snap-mandatory;
-        scroll-behavior: smooth;
-    }
-
-    .snap-section {
-        @apply h-screen w-full snap-start flex justify-center items-center;
-    }
+:root {
+    background-color: #050505;
+    color: #fff;
 }
 
 html,
 body {
-    @apply m-0 p-0 overflow-hidden bg-black text-white;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #050505;
+}
+
+.snap-container {
+    height: 100vh;
+    width: 100vw;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.snap-section {
+    height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    /* KRİTİK: Her seferde tek sayfa durdurur */
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Scrollbar Gizle */
+.snap-container::-webkit-scrollbar {
+    display: none;
+}
+
+.snap-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Navigasyon Noktaları */
+.nav-dots {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-dot.active {
+    background: #3b82f6;
+    transform: scale(1.3);
 }
