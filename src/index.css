@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400&family=Dancing+Script:wght@700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -16,16 +16,13 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    /* Sayfa dışına taşmayı engelle */
     font-family: 'Inter', sans-serif;
     background-color: #050505;
 }
 
-/* KESİN SCROLL AYARI */
 .snap-container {
     height: 100vh;
     height: 100dvh;
-    /* Mobilde adres çubuğu sorununu çözer */
     width: 100vw;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
@@ -36,19 +33,62 @@ body {
 .snap-section {
     height: 100vh;
     height: 100dvh;
-    width: 100%;
+    width: 100vw;
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    /* Kayınca durmayı zorlar */
     position: relative;
     overflow: hidden;
+    /* MERKEZLEME GARANTİSİ */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px;
 }
 
-/* Türkçe Karakterlerin Kesilmesini Önle */
-h1,
-h2,
-h3 {
-    line-height: 1.3 !important;
-    padding-bottom: 0.1em;
-    /* Alt kuyruklar (g, ş, ç) kesilmesin */
+/* Navigasyon Noktaları (Görünür Yap) */
+.nav-dots {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    /* En üstte */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    /* Arkasına hafif gölge */
+    padding: 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-dot:hover {
+    transform: scale(1.2);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.nav-dot.active {
+    background: #3b82f6;
+    box-shadow: 0 0 15px #3b82f6;
+    transform: scale(1.5);
+}
+
+/* Apple Style Text Gradient */
+.text-apple-gradient {
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
 }
