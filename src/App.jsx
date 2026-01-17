@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // Bileşenler
 import RippleGrid from './components/ui/RippleGrid';
-import { GridScan } from './components/ui/GridScan'; // Yeni Scanner
-import Galaxy from './components/ui/Galaxy';
+import { GridScan } from './components/ui/GridScan';
 import OrbitingSkills from './components/ui/OrbitingSkills';
 import FallingGlitch from './components/ui/FallingGlitch';
 import MagicBento from './components/ui/MagicBento';
@@ -13,42 +12,29 @@ import { FlipWords } from './components/ui/FlipWords';
 import GradientText from './components/ui/GradientText';
 import DetailSection from './components/ui/DetailSection';
 import TextPressure from './components/ui/TextPressure';
-
-// YÜKLEME EKRANI (PRELOADER)
-const Preloader = () => (
-  <motion.div
-    initial={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    className="fixed inset-0 z-50 bg-black flex items-center justify-center"
-  >
-    <div className="text-center">
-      <motion.div
-        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-        transition={{ repeat: Infinity, duration: 1.5 }}
-        className="text-6xl font-bold text-white mb-4"
-      >
-        TŞ
-      </motion.div>
-      <div className="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 2 }}
-          className="h-full bg-blue-500"
-        />
-      </div>
-    </div>
-  </motion.div>
-);
+import Galaxy from './components/ui/Galaxy';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // GridScan Görünürlük Kontrolü (15 saniyede bir)
+  const [showGridScan, setShowGridScan] = useState(false);
+
   useEffect(() => {
-    // 2.5 saniye sonra siteyi aç
-    const timer = setTimeout(() => setLoading(false), 2500);
-    return () => clearTimeout(timer);
+    // Preloader Süresi
+    const loadTimer = setTimeout(() => setLoading(false), 2000);
+
+    // GridScan Döngüsü: 15 saniyede bir aç, 5 saniye sonra kapat
+    const scanLoop = setInterval(() => {
+      setShowGridScan(true);
+      setTimeout(() => setShowGridScan(false), 5000); // 5 saniye ekranda kalsın
+    }, 15000); // 15 saniyede bir tetikle
+
+    return () => {
+      clearTimeout(loadTimer);
+      clearInterval(scanLoop);
+    };
   }, []);
 
   const scrollToSection = (idx) => {
@@ -58,14 +44,22 @@ const App = () => {
 
   return (
     <>
+      {/* 0. PRELOADER (ARTİSTİK) */}
       <AnimatePresence>
-        {loading && <Preloader />}
+        {loading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] bg-black flex items-center justify-center"
+          >
+            <div className="quantum-spinner"></div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {!loading && (
         <div className="snap-container bg-black text-white" onScroll={(e) => setActiveSection(Math.round(e.target.scrollTop / window.innerHeight))}>
 
-          {/* Yan Navigasyon */}
           <div className="nav-dots">
             {Array.from({ length: 13 }).map((_, idx) => (
               <div key={idx} className={`nav-dot ${activeSection === idx ? 'active' : ''}`} onClick={() => scrollToSection(idx)} />
@@ -73,24 +67,29 @@ const App = () => {
           </div>
 
           {/* --- 1. GİRİŞ (HERO) --- */}
-          <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden flex flex-col justify-center items-center h-screen w-screen">
+          <section className="snap-section relative bg-black overflow-hidden flex flex-col justify-center items-center h-screen w-screen">
 
-            {/* 1. RIPPLE GRID (Sürekli Dalgalanma) */}
-            <div className="absolute inset-0 z-0 opacity-40">
-              <RippleGrid gridColor="#4079ff" opacity={0.5} rippleIntensity={0.05} mouseInteraction={false} />
+            {/* KATMAN 1: RIPPLE GRID (SABİT ZEMİN) - Tam Ekran */}
+            <div className="absolute inset-0 z-0 opacity-50">
+              <RippleGrid gridColor="#4079ff" rippleIntensity={0.04} mouseInteraction={true} />
             </div>
 
-            {/* 2. GRID SCAN (15 Saniyede Bir Geçen Işık) */}
-            <GridScan
-              scanColor="#00ff41" // Matrix Yeşili veya Mavi
-              scanOpacity={0.6}
-              scanDuration={2.0}
-              scanDelay={10.0}
-            />
+            {/* KATMAN 2: GRID SCAN (MOR TÜNEL) - Ara Ara Gelir */}
+            {/* transition-opacity ile yumuşak geçiş yapıyoruz */}
+            <div
+              className="absolute inset-0 z-1 pointer-events-none transition-opacity duration-[2000ms]"
+              style={{ opacity: showGridScan ? 0.8 : 0 }}
+            >
+              <GridScan
+                scanColor="#FF9FFC" // İstediğin Mor/Pembe
+                linesColor="#2a2a2a"
+                gridScale={0.1}
+              />
+            </div>
 
-            {/* 3. TUĞRUL ŞİRİN (Text Pressure - Mouse Etkileşimli) */}
-            <div className="relative z-10 w-full max-w-[90vw] h-[300px] flex items-center justify-center">
-              <div className="w-full h-full cursor-default select-none">
+            {/* KATMAN 3: TUĞRUL ŞİRİN (TEXT PRESSURE) - KÜÇÜLTÜLDÜ */}
+            <div className="relative z-10 w-full max-w-5xl h-[200px] flex items-center justify-center select-none pointer-events-none">
+              <div className="w-full h-full">
                 <TextPressure
                   text="TUĞRUL ŞİRİN"
                   flex={true}
@@ -100,34 +99,36 @@ const App = () => {
                   weight={true}
                   italic={true}
                   textColor="#FFFFFF"
-                  minFontSize={100}
+                  minFontSize={60} // Küçültüldü (Eskiden 100 idi)
                   fontFamily="Inter"
-                  className="font-thin tracking-tighter"
+                  className="font-thin tracking-widest" // Daha zarif
                 />
               </div>
             </div>
 
-            {/* 4. ALT METİNLER */}
-            <div className="relative z-20 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto mt-8">
-              <div className="mb-8">
+            {/* KATMAN 4: ALT METİNLER */}
+            <div className="relative z-20 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
+              <div className="mb-6">
                 <GradientText
-                  colors={['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa']}
+                  colors={['#40ffaa', '#4079ff', '#40ffaa']}
                   animationSpeed={4}
-                  className="text-xl md:text-3xl font-light tracking-[0.2em] uppercase font-sans text-gray-300"
+                  className="text-lg md:text-2xl font-light tracking-[0.3em] uppercase font-sans text-gray-300"
                 >
                   E-TİCARET & OTOMASYON SYNERGY
                 </GradientText>
               </div>
-              <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-base text-gray-400 bg-white/5 p-3 rounded-full backdrop-blur-md border border-white/10 px-8">
+              <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-sm text-gray-400 bg-white/5 p-2 px-6 rounded-full backdrop-blur-md border border-white/10">
                 <span className="opacity-60 font-light">Uzmanlık:</span>
-                <FlipWords words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]} className="text-white font-medium" />
+                <FlipWords words={["Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]} className="text-white font-medium" />
               </div>
             </div>
 
-            <div className="absolute bottom-10 animate-bounce text-gray-600 text-xs tracking-[0.3em] cursor-pointer z-20 uppercase" onClick={() => scrollToSection(1)}>Keşfet</div>
+            <div className="absolute bottom-10 animate-bounce text-gray-600 text-[10px] tracking-[0.4em] cursor-pointer z-30 uppercase" onClick={() => scrollToSection(1)}>
+              Keşfet
+            </div>
           </section>
 
-          {/* DİĞER BÖLÜMLER (Aynen Kalıyor) */}
+          {/* DİĞER BÖLÜMLER AYNEN DEVAM EDİYOR... */}
           <section className="snap-section bg-[#030303]">
             <div className="w-full max-w-7xl px-4 text-center">
               <h2 className="text-4xl font-bold mb-12 text-white">Teknolojik Yetkinlikler</h2>

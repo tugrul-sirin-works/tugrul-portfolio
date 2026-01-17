@@ -1,91 +1,114 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400&family=Dancing+Script:wght@700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    background-color: #050505;
-    color: #ffffff;
+@layer base {
+    body {
+        @apply bg-black text-white font-sans overflow-x-hidden;
+    }
 }
 
-html,
-body {
-    margin: 0;
-    padding: 0;
+/* --- QUANTUM PRELOADER --- */
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #000;
+}
+
+.quantum-spinner {
+    width: 80px;
+    height: 80px;
+    position: relative;
+}
+
+.quantum-spinner:before,
+.quantum-spinner:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    font-family: 'Inter', sans-serif;
-    background-color: #050505;
+    border-radius: 50%;
+    border: 4px solid transparent;
+    border-top-color: #4079ff;
+    /* Mavi */
 }
 
+.quantum-spinner:before {
+    z-index: 100;
+    animation: spin 1s infinite;
+}
+
+.quantum-spinner:after {
+    border: 4px solid transparent;
+    border-bottom-color: #ff00ff;
+    /* Mor */
+    animation: spin 1s infinite alternate;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.2);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+/* GridScan CSS */
+.gridscan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Snap Scrolling */
 .snap-container {
     height: 100vh;
-    height: 100dvh;
-    width: 100vw;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    scroll-padding-top: 0;
 }
 
 .snap-section {
     height: 100vh;
-    height: 100dvh;
-    width: 100vw;
     scroll-snap-align: start;
-    scroll-snap-stop: always;
-    position: relative;
-    overflow: hidden;
-    /* MERKEZLEME GARANTİSİ */
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 20px;
+    width: 100%;
 }
 
-/* Navigasyon Noktaları (Minimal) */
+/* Nav Dots */
 .nav-dots {
     position: fixed;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 9999;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    /* Arkaplanı kaldırdık - daha az belirgin olması için */
-    padding: 8px;
+    z-index: 50;
 }
 
 .nav-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.3);
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.nav-dot:hover {
-    transform: scale(1.2);
-    background: rgba(255, 255, 255, 0.6);
 }
 
 .nav-dot.active {
-    background: #3b82f6;
-    box-shadow: 0 0 10px #3b82f6;
-    transform: scale(1.25);
-    border-color: transparent;
-}
-
-/* Apple Style Text Gradient */
-.text-apple-gradient {
-    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+    background-color: #4079ff;
+    transform: scale(1.5);
 }
