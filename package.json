@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://tugrulsirin.github.io/tugrul-portfolio",
+  "homepage": "https://tugrul-sirin-works.github.io/tugrul-portfolio",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
