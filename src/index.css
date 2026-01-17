@@ -8,73 +8,64 @@
     }
 }
 
-/* --- QUANTUM PRELOADER --- */
+/* --- ARTİSTİK PRELOADER --- */
 .loader-container {
+    position: fixed;
+    inset: 0;
+    background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: #000;
+    z-index: 9999;
 }
 
-.quantum-spinner {
-    width: 80px;
-    height: 80px;
-    position: relative;
+.spinner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #bd00ff;
+    /* Mor */
+    border-bottom-color: #0088ff;
+    /* Mavi */
+    animation: spin 1.5s linear infinite;
+    box-shadow: 0 0 15px rgba(189, 0, 255, 0.5);
 }
 
-.quantum-spinner:before,
-.quantum-spinner:after {
+.spinner:before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 10px;
     border-radius: 50%;
-    border: 4px solid transparent;
-    border-top-color: #4079ff;
-    /* Mavi */
-}
-
-.quantum-spinner:before {
-    z-index: 100;
-    animation: spin 1s infinite;
-}
-
-.quantum-spinner:after {
-    border: 4px solid transparent;
-    border-bottom-color: #ff00ff;
-    /* Mor */
-    animation: spin 1s infinite alternate;
+    border: 2px solid transparent;
+    border-left-color: #ffffff;
+    border-right-color: #ffffff;
+    animation: spin 2s linear infinite reverse;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg) scale(1);
+    from {
+        transform: rotate(0deg);
     }
 
-    50% {
-        transform: rotate(180deg) scale(1.2);
-    }
-
-    100% {
-        transform: rotate(360deg) scale(1);
+    to {
+        transform: rotate(360deg);
     }
 }
 
-/* GridScan CSS */
+/* GridScan Konumlandırma */
 .gridscan {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
     z-index: 1;
+    /* Ripple'ın üstünde */
+    mix-blend-mode: screen;
 }
 
-/* Snap Scrolling */
+/* Scroll Snap */
 .snap-container {
     height: 100vh;
     overflow-y: scroll;
