@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-// Bileşenler
-import LightRays from './components/ui/LightRays';
-import AuroraBackground from './components/ui/Aurora';
+// Bileşenler - ShapeBlur kaldırıldı
 import RippleGrid from './components/ui/RippleGrid';
 import OrbitingSkills from './components/ui/OrbitingSkills';
 import FallingGlitch from './components/ui/FallingGlitch';
@@ -12,7 +10,7 @@ import ScrollVelocity from './components/ui/ScrollVelocity';
 import { FlipWords } from './components/ui/FlipWords';
 import GradientText from './components/ui/GradientText';
 import DetailSection from './components/ui/DetailSection';
-import ShapeBlur from './components/ui/ShapeBlur';
+import AuroraBackground from './components/ui/Aurora';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState(0);
@@ -32,12 +30,11 @@ const App = () => {
         ))}
       </div>
 
-      {/* --- 1. GİRİŞ (HERO) - RIPPLE + SHAPE BLUR SYNERGY --- */}
+      {/* --- 1. GİRİŞ (HERO) - TEMİZLENDİ --- */}
       <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden flex flex-col justify-center items-center">
 
-        {/* KATMAN 1: RIPPLE GRID (En Altta ve Etkileşimli) */}
-        {/* KATMAN 1: RIPPLE GRID (En Altta ve Etkileşimli) */}
-        <div className="absolute inset-0 z-0 opacity-40 pointer-events-auto">
+        {/* KATMAN 1: RIPPLE GRID (Arka Plan) */}
+        <div className="absolute inset-0 z-0 opacity-40">
           <RippleGrid
             gridColor="#4079ff"
             opacity={0.5}
@@ -46,44 +43,12 @@ const App = () => {
           />
         </div>
 
-        {/* KATMAN 2: SHAPE BLUR (Sıvı Efekti - Ortada) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] z-10 opacity-60 mix-blend-screen pointer-events-none">
-          <ShapeBlur
-            variation={0}
-            pixelRatioProp={window.devicePixelRatio || 1}
-            shapeSize={2.5}
-            roundness={0.5}
-            borderSize={0.05}
-            circleSize={0.5}
-            circleEdge={1}
-          />
-        </div>
+        {/* KATMAN 2: İÇERİK (Shape Blur ve Maske Kaldırıldı) */}
+        <div className="relative z-10 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
 
-        {/* KATMAN 3: PERDE VE YAZI DELİĞİ (SVG MASK) */}
-        <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center">
-          <svg className="w-full h-full" width="100%" height="100%">
-            <defs>
-              <mask id="textMask">
-                <rect width="100%" height="100%" fill="white" />
-                <text
-                  x="50%" y="50%"
-                  dominantBaseline="middle"
-                  textAnchor="middle"
-                  fill="black"
-                  className="font-bold tracking-tighter"
-                  style={{ fontSize: 'clamp(3rem, 15vw, 12rem)', fontFamily: 'Inter, sans-serif' }}
-                >
-                  TUĞRUL ŞİRİN
-                </text>
-              </mask>
-            </defs>
-            {/* Yarı saydam siyah perde (0.8 opacity) - Maske ile delinir */}
-            <rect width="100%" height="100%" fill="rgba(0, 0, 0, 0.8)" mask="url(#textMask)" />
-          </svg>
-        </div>
-
-        {/* KATMAN 4: İÇERİK (Yazının Altındakiler) */}
-        <div className="relative z-30 mt-[35vh] text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
+          <h1 className="text-8xl md:text-[12rem] font-black tracking-tighter leading-none mb-6 text-white drop-shadow-2xl">
+            TUĞRUL ŞİRİN
+          </h1>
 
           <div className="mb-8">
             <GradientText
@@ -95,7 +60,7 @@ const App = () => {
             </GradientText>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-xl text-gray-400 bg-black/60 p-4 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-lg text-gray-400 bg-black/60 p-3 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl">
             <span className="opacity-70">Uzmanlık:</span>
             <FlipWords
               words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]}
@@ -104,7 +69,7 @@ const App = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-30" onClick={() => scrollToSection(1)}>
+        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-20" onClick={() => scrollToSection(1)}>
           AŞAĞI KAYDIR ↓
         </div>
       </section>
