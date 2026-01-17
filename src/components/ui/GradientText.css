@@ -1,0 +1,29 @@
+.animated-gradient-text {
+    display: inline-block;
+    position: relative;
+    font-weight: 800;
+    /* Kalın yazı */
+    letter-spacing: -0.02em;
+}
+
+.text-content {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    padding: 0.1em 0;
+    /* Kesilmeyi önler */
+}
+
+/* Opsiyonel Border Efekti */
+.gradient-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    padding: 2px;
+    /* Border kalınlığı */
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+}
