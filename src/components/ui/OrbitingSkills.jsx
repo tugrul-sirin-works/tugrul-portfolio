@@ -1,23 +1,22 @@
 import React, { useState, useEffect, memo } from 'react';
 
-// Özel Text İkon Bileşeni (Logosu olmayanlar için şık text kutusu)
 const TextIcon = ({ label, color }) => (
-    <div className="flex items-center justify-center w-full h-full rounded-full bg-black/80 border border-white/20" style={{ borderColor: color }}>
-        <span className="text-[10px] font-bold text-white text-center leading-tight px-1">{label}</span>
+    <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-black/90 border-2 shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-transform hover:scale-110" style={{ borderColor: color, boxShadow: `0 0 20px ${color}40` }}>
+        <span className="text-[10px] md:text-xs font-bold text-white text-center leading-tight px-1">{label}</span>
     </div>
 );
 
 const skillsConfig = [
-    // İç Çember (Operasyonel)
-    { id: 'amazon', orbitRadius: 90, size: 50, speed: 1.5, label: 'Amazon', color: '#FF9900', type: 'text' },
-    { id: 'entegra', orbitRadius: 90, size: 50, speed: 1.5, label: 'Entegra', color: '#0066CC', type: 'text', phaseShift: 2 },
-    { id: 'nebim', orbitRadius: 90, size: 50, speed: 1.5, label: 'Nebim V3', color: '#FF0000', type: 'text', phaseShift: 4 },
+    // İÇ ÇEMBER (Operasyonel)
+    { id: 'amazon', orbitRadius: 90, speed: 1.5, label: 'Amazon FBA', color: '#FF9900' },
+    { id: 'entegra', orbitRadius: 90, speed: 1.5, label: 'Entegra', color: '#0066CC', phaseShift: 2 },
+    { id: 'nebim', orbitRadius: 90, speed: 1.5, label: 'Nebim V3', color: '#FF0000', phaseShift: 4 },
 
-    // Dış Çember (Teknik & Araçlar)
-    { id: 'python', orbitRadius: 160, size: 45, speed: -1, label: 'Python', color: '#306998', type: 'text' },
-    { id: 'n8n', orbitRadius: 160, size: 45, speed: -1, label: 'n8n', color: '#FF6F61', type: 'text', phaseShift: 1.5 },
-    { id: 'sql', orbitRadius: 160, size: 45, speed: -1, label: 'SQL', color: '#00758F', type: 'text', phaseShift: 3 },
-    { id: 'excel', orbitRadius: 160, size: 45, speed: -1, label: 'Excel', color: '#1D6F42', type: 'text', phaseShift: 4.5 }
+    // DIŞ ÇEMBER (Teknik)
+    { id: 'python', orbitRadius: 170, speed: -1, label: 'Python', color: '#306998' },
+    { id: 'n8n', orbitRadius: 170, speed: -1, label: 'n8n', color: '#FF6F61', phaseShift: 1.5 },
+    { id: 'sql', orbitRadius: 170, speed: -1, label: 'SQL', color: '#00758F', phaseShift: 3 },
+    { id: 'excel', orbitRadius: 170, speed: -1, label: 'Excel', color: '#1D6F42', phaseShift: 4.5 }
 ];
 
 const OrbitingSkill = memo(({ config, angle }) => {
@@ -25,20 +24,15 @@ const OrbitingSkill = memo(({ config, angle }) => {
     const y = Math.sin(angle) * config.orbitRadius;
 
     return (
-        <div className="absolute top-1/2 left-1/2 transition-transform duration-100 ease-linear"
-            style={{
-                width: `${config.size}px`,
-                height: `${config.size}px`,
-                transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))`,
-                zIndex: 20
-            }}>
+        <div className="absolute top-1/2 left-1/2"
+            style={{ transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))`, zIndex: 20 }}>
             <TextIcon label={config.label} color={config.color} />
         </div>
     );
 });
 
 const OrbitPath = memo(({ radius }) => (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10"
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5"
         style={{ width: `${radius * 2}px`, height: `${radius * 2}px` }} />
 ));
 
@@ -48,7 +42,7 @@ export default function OrbitingSkills() {
     useEffect(() => {
         let frameId;
         const animate = () => {
-            setTime(prev => prev + 0.005);
+            setTime(prev => prev + 0.005); // Dönüş Hızı
             frameId = requestAnimationFrame(animate);
         };
         frameId = requestAnimationFrame(animate);
@@ -56,17 +50,18 @@ export default function OrbitingSkills() {
     }, []);
 
     return (
-        <div className="relative w-full h-[500px] flex items-center justify-center overflow-hidden">
-            {/* Merkez */}
-            <div className="absolute z-10 w-20 h-20 bg-brand-accent/20 backdrop-blur-md rounded-full flex items-center justify-center border border-brand-accent/50 shadow-[0_0_30px_rgba(59,130,246,0.5)]">
-                <span className="font-bold text-white text-xl">Core</span>
+        <div className="relative w-[350px] h-[350px] md:w-[500px] md:h-[500px] flex items-center justify-center">
+            {/* MERKEZ (CORE) */}
+            <div className="absolute z-10 w-24 h-24 bg-blue-600/20 backdrop-blur-md rounded-full flex items-center justify-center border border-blue-500/50 shadow-[0_0_50px_rgba(59,130,246,0.4)]">
+                <div className="text-center">
+                    <span className="block font-bold text-white text-xl">CORE</span>
+                    <span className="text-[9px] text-blue-200">HUB</span>
+                </div>
             </div>
 
-            {/* Yörüngeler */}
             <OrbitPath radius={90} />
-            <OrbitPath radius={160} />
+            <OrbitPath radius={170} />
 
-            {/* Yetenekler */}
             {skillsConfig.map(skill => (
                 <OrbitingSkill
                     key={skill.id}
