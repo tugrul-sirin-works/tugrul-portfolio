@@ -32,36 +32,42 @@ const App = () => {
         ))}
       </div>
 
-      {/* --- 1. GİRİŞ (HERO) --- */}
-      <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden">
+      {/* --- 1. GİRİŞ (HERO) - YAZI İÇİ EFEKT --- */}
+      <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden flex flex-col justify-center items-center">
 
-        {/* SHAPE BLUR EFEKTİ - YAZININ ARKASINDA */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] z-0 opacity-40 mix-blend-screen pointer-events-none">
-          <ShapeBlur variation={0} shapeSize={0.8} roundness={0.6} borderSize={0.03} circleSize={0.5} circleEdge={1} />
-        </div>
-
-        {/* Diğer Arka Planlar */}
+        {/* KATMAN 1: EFEKT (En altta) */}
         <div className="absolute inset-0 z-0">
-          <LightRays raysColor="#3b82f6" speed={0.2} mouseInfluence={0.3} />
-          <RippleGrid gridColor="#3b82f6" opacity={0.15} rippleIntensity={0.03} />
+          {/* ShapeBlur tüm ekrana yayılıyor ama maske ile sadece yazıda görünecek */}
+          <ShapeBlur variation={0} shapeSize={1.5} roundness={0.5} borderSize={0.05} circleSize={0.5} circleEdge={1} />
         </div>
 
-        <div className="relative z-10 text-center p-4 max-w-6xl flex flex-col items-center">
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="text-8xl md:text-[10rem] font-bold mb-2 tracking-tighter leading-[1.2] text-apple-gradient z-20 relative pb-4" // Line-height ve padding-bottom eklendi
-          >
-            Tuğrul Şirin
-          </motion.h1>
+        {/* KATMAN 2: SVG MASKE (Efekti kesip yazı yapar) */}
+        <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+          <svg className="w-full h-full font-bold uppercase" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <mask id="textMask">
+                {/* Beyaz kısımlar görünür (yazı), Siyah kısımlar görünmez (arka plan) */}
+                <rect width="100%" height="100%" fill="black" />
+                <text x="50%" y="45%" textAnchor="middle" dy=".3em" fontSize="180" fill="white" fontFamily="Inter, sans-serif" letterSpacing="-10">
+                  TUĞRUL ŞİRİN
+                </text>
+              </mask>
+            </defs>
+            {/* Siyah perde, maske ile delinir */}
+            <rect width="100%" height="100%" fill="black" mask="url(#textMask)" />
+          </svg>
+        </div>
 
-          <div className="mb-10 mt-4 z-20">
+        {/* KATMAN 3: DİĞER İÇERİKLER (Yazının altında kalanlar) */}
+        <div className="relative z-20 mt-[30vh] text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
+
+          <div className="mb-10">
             <GradientText colors={['#60A5FA', '#A78BFA', '#34D399']} animationSpeed={4} className="text-3xl md:text-5xl font-bold tracking-wide uppercase">
               E-TİCARET & OTOMASYON SYNERGY
             </GradientText>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-xl text-gray-400 bg-white/5 p-4 rounded-2xl backdrop-blur-md border border-white/10 z-20">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-xl text-gray-400 bg-black/80 p-4 rounded-2xl backdrop-blur-md border border-white/10">
             <span className="opacity-70">Uzmanlık:</span>
             <FlipWords
               words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]}
@@ -69,7 +75,8 @@ const App = () => {
             />
           </div>
         </div>
-        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-20" onClick={() => scrollToSection(1)}>
+
+        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-30" onClick={() => scrollToSection(1)}>
           AŞAĞI KAYDIR ↓
         </div>
       </section>
@@ -84,7 +91,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- 3. OPERASYON (KAPAK) - ORBIT --- */}
+      {/* --- 3. OPERASYON (KAPAK) --- */}
       <section className="snap-section bg-gradient-to-b from-black to-blue-950/20">
         <div className="absolute inset-0 z-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/40 via-transparent to-transparent" />
         <div className="relative z-10 w-full flex flex-col items-center justify-center">
@@ -97,7 +104,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- 4. OPERASYON (DETAY) - ZİNCİR TASARIMI --- */}
+      {/* --- 4. OPERASYON (DETAY) --- */}
       <section className="snap-section bg-[#050505]">
         <DetailSection
           title="Süreç ve Entegrasyon Ağı"
@@ -110,7 +117,7 @@ const App = () => {
         />
       </section>
 
-      {/* --- 5. VERİ (KAPAK) - MATRIX --- */}
+      {/* --- 5. VERİ (KAPAK) --- */}
       <section className="snap-section relative overflow-hidden bg-black">
         <FallingGlitch glitchColors={["#00ff41", "#008f11", "#003b00"]} />
         <div className="relative z-10 p-12 bg-black/90 backdrop-blur-xl border border-green-500/50 rounded-3xl text-center shadow-[0_0_50px_rgba(0,255,65,0.2)]">
@@ -134,7 +141,7 @@ const App = () => {
         />
       </section>
 
-      {/* --- 7. OTOMASYON (KAPAK) - AURORA --- */}
+      {/* --- 7. OTOMASYON (KAPAK) --- */}
       <section className="snap-section relative p-0 bg-black">
         <AuroraBackground className="w-full h-full">
           <div className="relative z-10 text-center flex flex-col items-center justify-center h-full">
@@ -204,7 +211,7 @@ const App = () => {
         />
       </section>
 
-      {/* --- 11. KREATİF (KAPAK) - SCROLL VELOCITY --- */}
+      {/* --- 11. KREATİF (KAPAK) --- */}
       <section className="snap-section bg-black relative flex flex-col justify-center overflow-hidden">
         <h2 className="text-center text-4xl font-bold mb-16 text-pink-500 z-10 bg-black/50 p-2 rounded-lg">Kreatif & Pazarlama</h2>
         <div className="w-full -rotate-3 opacity-80">
