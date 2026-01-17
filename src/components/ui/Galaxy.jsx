@@ -18,36 +18,52 @@ uniform vec3 uResolution;
 uniform float uStarSpeed;
 varying vec2 vUv;
 
-// Basitleştirilmiş Galaxy Shader (Performans İçin)
+// Basit Rastgelelik (Noise)
 float Hash21(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
   p += dot(p, p + 45.32);
   return fract(p.x * p.y);
 }
 
+// Yıldızları Çizen Fonksiyon
+vec3 StarLayer(vec2 uv) {
+    vec3 col = vec3(0.0);
+    vec2 gv = fract(uv) - 0.5;
+    vec2 id = floor(uv);
+    
+    for(int y=-1; y<=1; y++) {
+        for(int x=-1; x<=1; x++) {
+            vec2 offs = vec2(x, y);
+            float n = Hash21(id + offs);
+            float size = fract(n * 345.32);
+            float star = length(gv - offs - vec2(n, fract(n*34.0)) + 0.5);
+            
+            vec3 color = sin(vec3(0.2, 0.3, 0.9) * fract(n*2345.2) * 123.2) * 0.5 + 0.5;
+            // Parlaklık ve Boyut
+            float m = smoothstep(0.9 * size, 0.0, star); 
+            col += m * color;
+        }
+    }
+    return col;
+}
+
 void main() {
   vec2 uv = (vUv - 0.5) * uResolution.xy / uResolution.y;
   vec3 col = vec3(0.0);
+  float t = uTime * 0.05;
   
-  float t = uTime * 0.1;
+  // Döndürme
   mat2 rot = mat2(cos(t), -sin(t), sin(t), cos(t));
   uv *= rot;
 
+  // Katmanlı Yıldızlar (Derinlik Hissi)
   for(float i=0.0; i<1.0; i+=1.0/3.0) {
       float depth = fract(i + t);
-      float scale = mix(10.0, 0.5, depth);
+      float scale = mix(20.0, 0.5, depth);
       float fade = depth * smoothstep(1.0, 0.9, depth);
-      vec2 st = uv * scale;
-      vec2 id = floor(st);
-      vec2 gv = fract(st) - 0.5;
-      float d = length(gv);
-      float star = smoothstep(0.5, 0.05, d); // Yıldız
-      if(Hash21(id) > 0.95) col += vec3(star) * fade;
+      col += StarLayer(uv * scale + i * 453.2) * fade;
   }
   
-  // Mor/Mavi Aurora Ekleyelim
-  col += vec3(0.2, 0.0, 0.4) * (uv.y + 0.5); 
-
   gl_FragColor = vec4(col, 1.0);
 }
 `;

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 // Bileşenler
-import LightRays from './components/ui/LightRays';
-import Galaxy from './components/ui/Galaxy'; // YENİ
 import RippleGrid from './components/ui/RippleGrid';
+import Galaxy from './components/ui/Galaxy';
 import OrbitingSkills from './components/ui/OrbitingSkills';
 import FallingGlitch from './components/ui/FallingGlitch';
 import MagicBento from './components/ui/MagicBento';
@@ -12,7 +11,7 @@ import ScrollVelocity from './components/ui/ScrollVelocity';
 import { FlipWords } from './components/ui/FlipWords';
 import GradientText from './components/ui/GradientText';
 import DetailSection from './components/ui/DetailSection';
-import ShapeBlur from './components/ui/ShapeBlur'; // YENİ
+import TextPressure from './components/ui/TextPressure';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState(0);
@@ -32,32 +31,61 @@ const App = () => {
         ))}
       </div>
 
-      {/* --- 1. GİRİŞ (HERO) - SHAPE BLUR ILE --- */}
+      {/* --- 1. GİRİŞ (HERO) - RIPPLE + TEXT PRESSURE --- */}
       <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden flex flex-col justify-center items-center">
 
-        {/* Arka Plan: ShapeBlur (Yazının Arkasında) + RippleGrid */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-60 mix-blend-screen pointer-events-none">
-            <ShapeBlur />
-          </div>
-          <div className="absolute inset-0 opacity-40"><RippleGrid gridColor="#4079ff" rippleIntensity={0.5} /></div>
+        {/* KATMAN 1: RIPPLE GRID (Arka Plan - Mouse ile Dalgalanır) */}
+        <div className="absolute inset-0 z-0 opacity-40">
+          <RippleGrid
+            gridColor="#4079ff"
+            opacity={0.5}
+            rippleIntensity={0.5}
+            mouseInteraction={true}
+          />
         </div>
 
-        {/* İçerik */}
-        <div className="relative z-10 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
-          <h1 className="text-8xl md:text-[10rem] font-black tracking-tighter leading-none mb-6 text-white drop-shadow-2xl mix-blend-overlay">
-            TUĞRUL ŞİRİN
-          </h1>
+        {/* KATMAN 2: TUĞRUL ŞİRİN (Text Pressure - Hareketli Kalınlık) */}
+        {/* line-height sorunu ve kesilme burada çözüldü */}
+        <div className="relative z-10 w-full max-w-6xl h-[250px] md:h-[400px] flex items-center justify-center pointer-events-none">
+          <div className="w-full h-full scale-90 md:scale-100">
+            <TextPressure
+              text="TUĞRUL ŞİRİN"
+              flex={true}
+              alpha={false}
+              stroke={false}
+              width={true}
+              weight={true}
+              italic={true}
+              textColor="#FFFFFF"
+              minFontSize={80}
+            />
+          </div>
+        </div>
+
+        {/* KATMAN 3: ALT METİNLER */}
+        <div className="relative z-20 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto -mt-10">
           <div className="mb-8">
-            <GradientText colors={['#40ffaa', '#4079ff', '#40ffaa']} animationSpeed={4} className="text-2xl md:text-4xl font-bold tracking-wide uppercase font-mono">
+            <GradientText
+              colors={['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa']}
+              animationSpeed={4}
+              className="text-2xl md:text-4xl font-bold tracking-wide uppercase font-mono"
+            >
               E-TİCARET & OTOMASYON SYNERGY
             </GradientText>
           </div>
-          <div className="flex justify-center items-center gap-3 text-lg text-gray-400 bg-black/60 p-3 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl">
-            <FlipWords words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]} className="text-cyan-400 font-bold" />
+
+          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-lg text-gray-400 bg-black/60 p-3 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl">
+            <span className="opacity-70">Uzmanlık:</span>
+            <FlipWords
+              words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]}
+              className="text-cyan-400 font-bold"
+            />
           </div>
         </div>
-        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-20" onClick={() => scrollToSection(1)}>AŞAĞI KAYDIR ↓</div>
+
+        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-20" onClick={() => scrollToSection(1)}>
+          AŞAĞI KAYDIR ↓
+        </div>
       </section>
 
       {/* --- 2. ÖZET (BENTO) --- */}
@@ -103,10 +131,12 @@ const App = () => {
       </section>
 
       {/* --- 7. OTOMASYON (KAPAK) - GALAXY EFEKTİ --- */}
-      <section className="snap-section relative p-0 bg-black">
+      <section className="snap-section relative p-0 bg-black overflow-hidden">
         <Galaxy />
-        <div className="relative z-10 text-center pointer-events-none">
-          <h2 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Otonom Sistemler</h2>
+        <div className="relative z-10 text-center pointer-events-none flex flex-col items-center justify-center h-full">
+          <h2 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 drop-shadow-2xl">
+            Otonom Sistemler
+          </h2>
           <p className="text-2xl text-purple-200 mt-4 font-light">"Kendi kendine karar veren dijital iş gücü."</p>
         </div>
       </section>
