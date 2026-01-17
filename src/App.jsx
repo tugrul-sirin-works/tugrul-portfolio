@@ -49,7 +49,6 @@ const App = () => {
         {/* KATMAN 2: SHAPE BLUR (Sıvı Efekti - Ortada) */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] z-10 opacity-60 mix-blend-screen pointer-events-none">
           <ShapeBlur
-           <ShapeBlur
             variation={0}
             pixelRatioProp={window.devicePixelRatio || 1}
             shapeSize={2.5}
