@@ -16,84 +16,39 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    /* Sayfa dışına taşmayı engeller */
+    /* Sayfa dışına taşmayı engelle */
     font-family: 'Inter', sans-serif;
-    /* Ana Font */
-    background: #050505;
+    background-color: #050505;
 }
 
-/* KOD YAZILARI İÇİN (Matrix vb.) */
-.font-mono {
-    font-family: 'JetBrains Mono', monospace;
-}
-
-/* SNAP SCROLL YAPISI (Kaydırma) */
+/* KESİN SCROLL AYARI */
 .snap-container {
     height: 100vh;
-    /* Fallback */
     height: 100dvh;
-    /* Dynamic Viewport Height (Telefonda zıplamayı önler) */
+    /* Mobilde adres çubuğu sorununu çözer */
     width: 100vw;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
-    overflow-x: hidden;
+    scroll-padding-top: 0;
 }
 
 .snap-section {
     height: 100vh;
     height: 100dvh;
-    width: 100vw;
+    width: 100%;
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    /* Her harekette 1 slayt atlar */
+    /* Kayınca durmayı zorlar */
     position: relative;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
-/* SCROLLBAR GİZLEME */
-.snap-container::-webkit-scrollbar {
-    display: none;
-}
-
-.snap-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-/* NAVİGASYON NOKTALARI */
-.nav-dots {
-    position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.nav-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.nav-dot:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-.nav-dot.active {
-    background: #3b82f6;
-    /* Mavi Aktif Renk */
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
-    transform: scale(1.2);
+/* Türkçe Karakterlerin Kesilmesini Önle */
+h1,
+h2,
+h3 {
+    line-height: 1.3 !important;
+    padding-bottom: 0.1em;
+    /* Alt kuyruklar (g, ş, ç) kesilmesin */
 }
