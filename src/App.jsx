@@ -31,19 +31,23 @@ const App = () => {
         ))}
       </div>
 
-      {/* --- 1. GİRİŞ (HERO) - SAKİN ZEMİN + ETKİLEŞİMLİ YAZI --- */}
-      <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden flex flex-col justify-center items-center">
+      {/* --- 1. GİRİŞ (HERO) - TAM EKRAN RIPPLE + TEXT PRESSURE --- */}
+      <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden flex flex-col justify-center items-center h-screen w-screen">
 
-        {/* KATMAN 1: ORİJİNAL RIPPLE GRID (Sadece Otomatik Dalgalanma) */}
-        {/* pointer-events-none yaptık ki mouse'u çalmasın */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <RippleGrid opacity={0.3} />
+        {/* KATMAN 1: RIPPLE GRID (Tam Ekran Arka Plan) */}
+        {/* z-0 ve pointer-events-auto: Mouse'u direkt alır */}
+        <div className="absolute inset-0 z-0 opacity-60">
+          <RippleGrid
+            gridColor="#4079ff"
+            rippleIntensity={0.05} // Standart dalgalanma
+            mouseInteraction={true}
+          />
         </div>
 
-        {/* KATMAN 2: TUĞRUL ŞİRİN (Text Pressure - Mouse Etkileşimli) */}
-        {/* Container genişliğini artırdık ve mouse olaylarını buraya odakladık */}
-        <div className="relative z-10 w-full max-w-[90vw] h-[300px] flex items-center justify-center">
-          <div className="w-full h-full cursor-default select-none">
+        {/* KATMAN 2: TUĞRUL ŞİRİN (Text Pressure) */}
+        {/* pointer-events-none: Mouse buradan GEÇER ve arkadaki Ripple'a değer */}
+        <div className="relative z-10 w-full max-w-7xl h-[300px] flex items-center justify-center pointer-events-none">
+          <div className="w-full h-full">
             <TextPressure
               text="TUĞRUL ŞİRİN"
               flex={true}
@@ -53,36 +57,35 @@ const App = () => {
               weight={true}
               italic={true}
               textColor="#FFFFFF"
-              minFontSize={100} // Daha büyük başlangıç
-              fontFamily="Inter" // Sistem fontu
-              className="font-thin tracking-tighter" // İnce ve sıkı (Apple tarzı)
+              minFontSize={100}
             />
           </div>
         </div>
 
-        {/* KATMAN 3: ALT METİNLER */}
-        <div className="relative z-20 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto mt-8">
+        {/* KATMAN 3: ALT İÇERİKLER */}
+        {/* pointer-events-auto: Linklere tıklanabilsin */}
+        <div className="relative z-20 text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto -mt-4">
           <div className="mb-8">
             <GradientText
               colors={['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa']}
               animationSpeed={4}
-              className="text-xl md:text-3xl font-light tracking-[0.2em] uppercase font-sans text-gray-300"
+              className="text-2xl md:text-4xl font-bold tracking-wide uppercase font-mono"
             >
               E-TİCARET & OTOMASYON SYNERGY
             </GradientText>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-base text-gray-400 bg-white/5 p-3 rounded-full backdrop-blur-md border border-white/10 px-8">
-            <span className="opacity-60 font-light">Uzmanlık:</span>
+          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-lg text-gray-400 bg-black/70 p-3 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl">
+            <span className="opacity-70">Uzmanlık:</span>
             <FlipWords
               words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]}
-              className="text-white font-medium"
+              className="text-cyan-400 font-bold"
             />
           </div>
         </div>
 
-        <div className="absolute bottom-10 animate-bounce text-gray-600 text-xs tracking-[0.3em] cursor-pointer z-20 uppercase" onClick={() => scrollToSection(1)}>
-          Keşfet
+        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-30 pointer-events-auto" onClick={() => scrollToSection(1)}>
+          AŞAĞI KAYDIR ↓
         </div>
       </section>
 
