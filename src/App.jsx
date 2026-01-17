@@ -32,42 +32,75 @@ const App = () => {
         ))}
       </div>
 
-      {/* --- 1. GİRİŞ (HERO) - YAZI İÇİ EFEKT --- */}
+      {/* --- 1. GİRİŞ (HERO) - RIPPLE + SHAPE BLUR SYNERGY --- */}
       <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden flex flex-col justify-center items-center">
 
-        {/* KATMAN 1: EFEKT (En altta) */}
-        <div className="absolute inset-0 z-0">
-          {/* ShapeBlur tüm ekrana yayılıyor ama maske ile sadece yazıda görünecek */}
-          <ShapeBlur variation={0} shapeSize={1.5} roundness={0.5} borderSize={0.05} circleSize={0.5} circleEdge={1} />
+        {/* KATMAN 1: RIPPLE GRID (En Altta ve Etkileşimli) */}
+        {/* pointer-events-auto yaptık ki mouse'u hissetsin */}
+        <div className="absolute inset-0 z-0 opacity-40 pointer-events-auto">
+          <RippleGrid
+            gridColor="#4079ff"
+            opacity={0.5}
+            rippleIntensity={0.5}
+            mouseInteraction={true}
+          />
         </div>
 
-        {/* KATMAN 2: SVG MASKE (Efekti kesip yazı yapar) */}
-        <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-          <svg className="w-full h-full font-bold uppercase" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+        {/* KATMAN 2: SHAPE BLUR (Sıvı Efekti - Ortada) */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] z-10 opacity-60 mix-blend-screen pointer-events-none">
+          <ShapeBlur
+            variation={0}
+            pixelRatioProp={window.devicePixelRatio || 1}
+            shapeSize={2.5}
+            roundness={0.5}
+            borderSize={0.05}
+            circleSize={0.5}
+            circleEdge={1}
+          />
+        </div>
+
+        {/* KATMAN 3: YARI ŞEFFAF PERDE & YAZI DELİĞİ (SVG MASK) */}
+        {/* pointer-events-none EKLENDİ: Mouse buradan geçip alttaki RippleGrid'e değecek */}
+        <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center">
+          <svg className="w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
             <defs>
               <mask id="textMask">
-                {/* Beyaz kısımlar görünür (yazı), Siyah kısımlar görünmez (arka plan) */}
-                <rect width="100%" height="100%" fill="black" />
-                <text x="50%" y="45%" textAnchor="middle" dy=".3em" fontSize="180" fill="white" fontFamily="Inter, sans-serif" letterSpacing="-10">
+                {/* Beyaz kısımlar = Perde GÖRÜNÜR. Siyah kısımlar = Perde DELİNİR (Yazı) */}
+                <rect width="100%" height="100%" fill="white" />
+                <text
+                  x="50%" y="50%"
+                  textAnchor="middle"
+                  dy=".35em"
+                  fontSize="220"
+                  fontWeight="900"
+                  fill="black"
+                  className="font-sans tracking-tighter"
+                >
                   TUĞRUL ŞİRİN
                 </text>
               </mask>
             </defs>
-            {/* Siyah perde, maske ile delinir */}
-            <rect width="100%" height="100%" fill="black" mask="url(#textMask)" />
+            {/* DÜZELTME: fill="black" yerine rgba kullandık. 
+                Böylece arkadaki Ripple Grid hafifçe görünecek (0.9 opaklık).
+            */}
+            <rect width="100%" height="100%" fill="rgba(5, 5, 5, 0.9)" mask="url(#textMask)" />
           </svg>
         </div>
 
-        {/* KATMAN 3: DİĞER İÇERİKLER (Yazının altında kalanlar) */}
-        <div className="relative z-20 mt-[30vh] text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
+        {/* KATMAN 4: İÇERİK (Yazının Altındakiler) */}
+        <div className="relative z-30 mt-[35vh] text-center p-4 max-w-6xl flex flex-col items-center pointer-events-auto">
 
-          <div className="mb-10">
-            <GradientText colors={['#60A5FA', '#A78BFA', '#34D399']} animationSpeed={4} className="text-3xl md:text-5xl font-bold tracking-wide uppercase">
+          <div className="mb-8">
+            <GradientText
+              colors={['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa']}
+              animationSpeed={4}
+              className="text-2xl md:text-4xl font-bold tracking-wide uppercase font-mono"
+            >
               E-TİCARET & OTOMASYON SYNERGY
             </GradientText>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-xl text-gray-400 bg-black/80 p-4 rounded-2xl backdrop-blur-md border border-white/10">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-lg text-gray-400 bg-black/60 p-3 rounded-xl backdrop-blur-sm border border-white/10 shadow-2xl">
             <span className="opacity-70">Uzmanlık:</span>
             <FlipWords
               words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]}
