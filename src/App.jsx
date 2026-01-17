@@ -12,6 +12,7 @@ import ScrollVelocity from './components/ui/ScrollVelocity';
 import { FlipWords } from './components/ui/FlipWords';
 import GradientText from './components/ui/GradientText';
 import DetailSection from './components/ui/DetailSection';
+import ShapeBlur from './components/ui/ShapeBlur';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState(0);
@@ -24,37 +25,43 @@ const App = () => {
   return (
     <div className="snap-container bg-black text-white" onScroll={(e) => setActiveSection(Math.round(e.target.scrollTop / window.innerHeight))}>
 
-      {/* Yan Navigasyon (Z-Index Fix) */}
+      {/* Yan Navigasyon */}
       <div className="nav-dots">
         {Array.from({ length: 13 }).map((_, idx) => (
           <div key={idx} className={`nav-dot ${activeSection === idx ? 'active' : ''}`} onClick={() => scrollToSection(idx)} />
         ))}
       </div>
 
-      {/* --- 1. GİRİŞ (HERO) - DÜZELTİLDİ --- */}
-      <section className="snap-section relative border-b border-white/5 bg-black">
-        {/* Arka Plan: Mavi Işıklar + Ripple */}
+      {/* --- 1. GİRİŞ (HERO) --- */}
+      <section className="snap-section relative border-b border-white/5 bg-black overflow-hidden">
+
+        {/* SHAPE BLUR EFEKTİ - YAZININ ARKASINDA */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] z-0 opacity-40 mix-blend-screen pointer-events-none">
+          <ShapeBlur variation={0} shapeSize={0.8} roundness={0.6} borderSize={0.03} circleSize={0.5} circleEdge={1} />
+        </div>
+
+        {/* Diğer Arka Planlar */}
         <div className="absolute inset-0 z-0">
-          <LightRays raysColor="#1e40af" speed={0.2} mouseInfluence={0.5} />
-          <RippleGrid gridColor="#3b82f6" opacity={0.3} rippleIntensity={0.06} />
+          <LightRays raysColor="#3b82f6" speed={0.2} mouseInfluence={0.3} />
+          <RippleGrid gridColor="#3b82f6" opacity={0.15} rippleIntensity={0.03} />
         </div>
 
         <div className="relative z-10 text-center p-4 max-w-6xl flex flex-col items-center">
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="text-8xl md:text-[10rem] font-bold mb-2 tracking-tighter leading-[1] text-apple-gradient pb-6"
+            className="text-8xl md:text-[10rem] font-bold mb-2 tracking-tighter leading-[1.2] text-apple-gradient z-20 relative pb-4" // Line-height ve padding-bottom eklendi
           >
             Tuğrul Şirin
           </motion.h1>
 
-          <div className="mb-10 mt-4">
+          <div className="mb-10 mt-4 z-20">
             <GradientText colors={['#60A5FA', '#A78BFA', '#34D399']} animationSpeed={4} className="text-3xl md:text-5xl font-bold tracking-wide uppercase">
               E-TİCARET & OTOMASYON SYNERGY
             </GradientText>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-xl text-gray-400 bg-white/5 p-4 rounded-2xl backdrop-blur-md border border-white/10">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-3 text-xl text-gray-400 bg-white/5 p-4 rounded-2xl backdrop-blur-md border border-white/10 z-20">
             <span className="opacity-70">Uzmanlık:</span>
             <FlipWords
               words={["Operasyon", "Veri Analizi", "Entegrasyon", "AI Agent", "Süreç Yönetimi"]}
@@ -62,12 +69,12 @@ const App = () => {
             />
           </div>
         </div>
-        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer" onClick={() => scrollToSection(1)}>
+        <div className="absolute bottom-10 animate-bounce text-gray-500 text-sm tracking-widest cursor-pointer z-20" onClick={() => scrollToSection(1)}>
           AŞAĞI KAYDIR ↓
         </div>
       </section>
 
-      {/* --- 2. ÖZET (BENTO) - TASARIM İYİLEŞTİRİLDİ --- */}
+      {/* --- 2. ÖZET (BENTO) --- */}
       <section className="snap-section bg-[#030303]">
         <div className="w-full max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-6xl font-bold mb-12 text-white bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-500">
@@ -169,7 +176,6 @@ const App = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-500/20 blur-[120px] rounded-full pointer-events-none" />
           <h2 className="text-6xl font-bold text-white mb-10">Özel Çözümler</h2>
 
-          {/* Mockup Yerine Daha Modern Bir Temsil */}
           <div className="flex justify-center gap-8 items-center">
             <div className="w-64 h-96 bg-gray-900 border-4 border-gray-700 rounded-[3rem] flex flex-col items-center justify-center shadow-2xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20 group-hover:opacity-100 transition-opacity" />
